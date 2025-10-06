@@ -4,22 +4,56 @@
     <title>Subnetting Tutor</title>
     <style>
         body { font-family: 'Segoe UI', sans-serif; background: #f7f7f7; text-align: center; }
-        .container { margin-top: 100px; background: white; padding: 30px; border-radius: 10px; width: 500px; margin-left: auto; margin-right: auto; box-shadow: 0 0 10px rgba(0,0,0,0.1);}
+        .container { margin-top: 60px; background: white; padding: 30px; border-radius: 10px; width: 520px; margin-left: auto; margin-right: auto; box-shadow: 0 0 10px rgba(0,0,0,0.1);}
         input { padding: 10px; margin: 5px; width: 80%; }
         button { padding: 10px 20px; background: #0078D7; color: white; border: none; border-radius: 5px; cursor: pointer; }
         button:hover { background: #005ea6; }
         .error { color: red; }
+        .mode-links { margin-top: 20px; }
+        a { color: #0078D7; text-decoration: none; font-weight: bold; }
+        a:hover { text-decoration: underline; }
     </style>
+    <script>
+        function showMode(mode) {
+            document.getElementById('default-form').style.display = 'none';
+            document.getElementById('host-form').style.display = 'none';
+            document.getElementById('network-form').style.display = 'none';
+            document.getElementById(mode + '-form').style.display = 'block';
+        }
+    </script>
 </head>
 <body>
     <div class="container">
         <h1>Subnetting Tutor</h1>
-        <p>Learn Subnetting, Subnetting via Host, and Supernetting interactively!</p>
-        <form method="POST" action="/calculate">
+        <p>Learn Subnetting interactively — choose your method below:</p>
+
+        <div class="mode-links">
+            <a href="#" onclick="showMode('default')">Normal Calculation</a> |
+            <a href="#" onclick="showMode('host')">Subnetting via Host</a> |
+            <a href="#" onclick="showMode('network')">Subnetting via Network</a>
+        </div>
+
+        <!-- Default IP/Mask form -->
+        <form id="default-form" method="POST" action="/calculate" style="display:block;">
             <input type="text" name="ip" placeholder="Enter IP address (e.g. 192.168.1.10)" required><br>
             <input type="text" name="mask" placeholder="Enter subnet mask (e.g. 24)" required><br>
             <button type="submit">Calculate</button>
         </form>
+
+        <!-- Subnetting via Host -->
+        <form id="host-form" method="POST" action="/subnet_host" style="display:none;">
+            <input type="text" name="ip" placeholder="Enter network IP (e.g. 192.168.1.0)" required><br>
+            <input type="number" name="hosts" placeholder="Enter hosts per subnet (e.g. 50)" required><br>
+            <button type="submit">Subnet via Host</button>
+        </form>
+
+        <!-- Subnetting via Network -->
+        <form id="network-form" method="POST" action="/subnet_network" style="display:none;">
+            <input type="text" name="ip" placeholder="Enter network IP (e.g. 192.168.1.0)" required><br>
+            <input type="number" name="networks" placeholder="Enter number of subnets (e.g. 8)" required><br>
+            <button type="submit">Subnet via Network</button>
+        </form>
+
         {% if error %}
         <p class="error">{{ error }}</p>
         {% endif %}

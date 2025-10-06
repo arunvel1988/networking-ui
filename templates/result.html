@@ -1,51 +1,55 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Subnetting Result</title>
+    <title>Subnetting Results</title>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background: #f0f4f7; text-align: center; }
-        .card { background: white; width: 700px; margin: 30px auto; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        body { font-family: 'Segoe UI', sans-serif; background: #eef2f6; text-align: center; }
+        .card { background: white; width: 750px; margin: 30px auto; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
         table { margin: auto; border-collapse: collapse; }
-        td { padding: 10px; border-bottom: 1px solid #ccc; }
+        td, th { padding: 10px; border-bottom: 1px solid #ccc; }
         h2 { color: #0078D7; }
-        .bits { font-family: monospace; font-size: 1.2em; background: #e8f0fe; padding: 5px; border-radius: 6px; }
-        .highlight-network { color: green; font-weight: bold; }
-        .highlight-host { color: red; font-weight: bold; }
     </style>
 </head>
 <body>
     <div class="card">
-        <h1>Subnetting Breakdown</h1>
-        <table>
-            <tr><td><b>IP Address:</b></td><td>{{ ip }}</td></tr>
-            <tr><td><b>Subnet Mask:</b></td><td>/{{ mask }}</td></tr>
-            <tr><td><b>Network Bits:</b></td><td>{{ network_bits }}</td></tr>
-            <tr><td><b>Host Bits:</b></td><td>{{ host_bits }}</td></tr>
-            <tr><td><b>Network Address:</b></td><td>{{ network_address }}</td></tr>
-            <tr><td><b>Broadcast Address:</b></td><td>{{ broadcast_address }}</td></tr>
-            <tr><td><b>Usable Hosts:</b></td><td>{{ total_hosts }}</td></tr>
-        </table>
-
-        <h2>Binary Representation</h2>
-        <p class="bits">
-            {{ ip_binary }}<br>
-            {{ mask_binary }}
-        </p>
-
-        <h2>Subnetting via Network Bits</h2>
-        <table>
-            <tr><th>New Prefix</th><th>Subnets</th><th>First Subnet</th><th>Second Subnet</th></tr>
-            {% for subnet in subnetting_examples %}
-            <tr><td>{{ subnet[0] }}</td><td>{{ subnet[1] }}</td><td>{{ subnet[2] }}</td><td>{{ subnet[3] }}</td></tr>
-            {% endfor %}
-        </table>
-
-        {% if supernet_example %}
-        <h2>Supernetting Example</h2>
-        <p>Aggregating smaller networks → {{ supernet_example[0] }}</p>
+        {% if mode == 'normal' %}
+        <h2>Standard Subnet Calculation</h2>
+        <p>IP: {{ ip }} /{{ mask }}</p>
+        <p>Network Bits: {{ network_bits }} | Host Bits: {{ host_bits }}</p>
+        <p><b>Network Address:</b> {{ network_address }}</p>
+        <p><b>Broadcast Address:</b> {{ broadcast_address }}</p>
+        <p><b>Total Usable Hosts:</b> {{ total_hosts }}</p>
         {% endif %}
 
-        <br><a href="/">🔙 Try Another</a>
+        {% if mode == 'host' %}
+        <h2>Subnetting via Host</h2>
+        <p>IP: {{ ip }} | Hosts per subnet: {{ hosts }}</p>
+        <p>Host bits needed: {{ required_bits }} | New prefix: /{{ new_prefix }}</p>
+        <p>Total Subnets created: {{ total }}</p>
+        <h3>Example Subnets:</h3>
+        <table>
+            <tr><th>Subnet</th><th>Range</th></tr>
+            {% for s in subnets %}
+            <tr><td>{{ s }}</td><td>{{ s.network_address }} - {{ s.broadcast_address }}</td></tr>
+            {% endfor %}
+        </table>
+        {% endif %}
+
+        {% if mode == 'network' %}
+        <h2>Subnetting via Network</h2>
+        <p>IP: {{ ip }} | Subnets required: {{ networks }}</p>
+        <p>Bits borrowed: {{ bits_needed }} | New prefix: /{{ new_prefix }}</p>
+        <p>Total Subnets created: {{ total }}</p>
+        <h3>Example Subnets:</h3>
+        <table>
+            <tr><th>Subnet</th><th>Range</th></tr>
+            {% for s in subnets %}
+            <tr><td>{{ s }}</td><td>{{ s.network_address }} - {{ s.broadcast_address }}</td></tr>
+            {% endfor %}
+        </table>
+        {% endif %}
+
+        <br><a href="/">🔙 Try Again</a>
     </div>
 </body>
 </html>
