@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Subnetting Tutor</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #f7f7f7; text-align: center; }
+        .container { margin-top: 100px; background: white; padding: 30px; border-radius: 10px; width: 500px; margin-left: auto; margin-right: auto; box-shadow: 0 0 10px rgba(0,0,0,0.1);}
+        input { padding: 10px; margin: 5px; width: 80%; }
+        button { padding: 10px 20px; background: #0078D7; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        button:hover { background: #005ea6; }
+        .error { color: red; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Subnetting Tutor</h1>
+        <p>Learn Subnetting, Subnetting via Host, and Supernetting interactively!</p>
+        <form method="POST" action="/calculate">
+            <input type="text" name="ip" placeholder="Enter IP address (e.g. 192.168.1.10)" required><br>
+            <input type="text" name="mask" placeholder="Enter subnet mask (e.g. 24)" required><br>
+            <button type="submit">Calculate</button>
+        </form>
+        {% if error %}
+        <p class="error">{{ error }}</p>
+        {% endif %}
+    </div>
+</body>
+</html>
