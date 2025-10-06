@@ -2,65 +2,78 @@
 <html>
 <head>
     <title>Subnetting Tutor (Arun)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background: #f7f7f7; text-align: center; }
-        .container { margin-top: 60px; background: white; padding: 30px; border-radius: 10px; width: 520px; margin-left: auto; margin-right: auto; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-        input { padding: 10px; margin: 5px; width: 80%; }
-        button { padding: 10px 20px; background: #0078D7; color: white; border: none; border-radius: 5px; cursor: pointer; }
-        button:hover { background: #005ea6; }
-        .error { color: red; }
-        .mode-links { margin-top: 20px; }
-        a { color: #0078D7; text-decoration: none; font-weight: bold; }
-        a:hover { text-decoration: underline; }
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(to right, #6a11cb, #2575fc);
+            margin:0; padding:0;
+            color:white;
+            text-align:center;
+        }
+        .container{
+            background:white; color:black; margin:50px auto;
+            padding:30px; border-radius:15px; width:600px;
+            box-shadow:0 10px 25px rgba(0,0,0,0.3);
+        }
+        input, button{
+            padding:10px; margin:5px; width:80%; border-radius:8px; border:1px solid #ccc;
+        }
+        button{ background:#2575fc; color:white; border:none; cursor:pointer; transition:0.3s;}
+        button:hover{ background:#6a11cb; }
+        .mode-links{ margin:20px 0; }
+        a{ color:#2575fc; text-decoration:none; font-weight:bold; margin:0 10px;}
+        a:hover{ text-decoration:underline; }
+        .error{ color:red; margin-top:10px;}
     </style>
     <script>
-        function showMode(mode) {
-            document.getElementById('supernet-form').style.display = 'none';
-            document.getElementById('default-form').style.display = 'none';
-            document.getElementById('host-form').style.display = 'none';
-            document.getElementById('network-form').style.display = 'none';
-            document.getElementById(mode + '-form').style.display = 'block';
+        function showMode(mode){
+            document.getElementById('default-form').style.display='none';
+            document.getElementById('host-form').style.display='none';
+            document.getElementById('network-form').style.display='none';
+            document.getElementById('supernet-form').style.display='none';
+            document.getElementById(mode+'-form').style.display='block';
         }
     </script>
 </head>
 <body>
     <div class="container">
         <h1>Subnetting Tutor (Arun)</h1>
-        <p>Learn Subnetting interactively — choose your method below:</p>
-
+        <p>Choose mode:</p>
         <div class="mode-links">
-            <a href="#" onclick="showMode('supernet')">Supernetting</a> |
-            <a href="#" onclick="showMode('default')">Normal Calculation</a> |
-            <a href="#" onclick="showMode('host')">Subnetting via Host</a> |
-            <a href="#" onclick="showMode('network')">Subnetting via Network</a>
+            <a href="#" onclick="showMode('default')">Normal</a> |
+            <a href="#" onclick="showMode('host')">Subnet via Host</a> |
+            <a href="#" onclick="showMode('network')">Subnet via Network</a> |
+            <a href="#" onclick="showMode('supernet')">Supernet</a>
         </div>
 
-        <!-- Supernetting -->
-        <form id="supernet-form" method="POST" action="/supernet" style="display:none;">
-            <input type="text" name="ip1" placeholder="Enter first network (e.g. 192.168.0.0/24)" required><br>
-            <input type="text" name="ip2" placeholder="Enter second network (e.g. 192.168.1.0/24)" required><br>
-            <button type="submit">Calculate Supernet</button>
-        </form>
-
-        <!-- Default -->
+        <!-- Normal -->
         <form id="default-form" method="POST" action="/calculate" style="display:block;">
-            <input type="text" name="ip" placeholder="Enter IP address (e.g. 192.168.1.10)" required><br>
-            <input type="text" name="mask" placeholder="Enter subnet mask (e.g. 24)" required><br>
+            <input type="text" name="ip" placeholder="IP (e.g., 192.168.1.10)" required><br>
+            <input type="text" name="mask" placeholder="Subnet mask / prefix (optional)"><br>
             <button type="submit">Calculate</button>
         </form>
 
         <!-- Subnet via Host -->
         <form id="host-form" method="POST" action="/subnet_host" style="display:none;">
-            <input type="text" name="ip" placeholder="Enter network IP (e.g. 192.168.1.0)" required><br>
-            <input type="number" name="hosts" placeholder="Enter hosts per subnet (e.g. 50)" required><br>
+            <input type="text" name="ip" placeholder="Network IP (e.g., 10.0.0.0)" required><br>
+            <input type="number" name="hosts" placeholder="Hosts per subnet" required><br>
+            <input type="text" name="mask" placeholder="Subnet mask / prefix (optional)"><br>
             <button type="submit">Subnet via Host</button>
         </form>
 
         <!-- Subnet via Network -->
         <form id="network-form" method="POST" action="/subnet_network" style="display:none;">
-            <input type="text" name="ip" placeholder="Enter network IP (e.g. 192.168.1.0)" required><br>
-            <input type="number" name="networks" placeholder="Enter number of subnets (e.g. 8)" required><br>
+            <input type="text" name="ip" placeholder="Network IP (e.g., 10.0.0.0)" required><br>
+            <input type="number" name="networks" placeholder="Number of subnets" required><br>
+            <input type="text" name="mask" placeholder="Subnet mask / prefix (optional)"><br>
             <button type="submit">Subnet via Network</button>
+        </form>
+
+        <!-- Supernetting -->
+        <form id="supernet-form" method="POST" action="/supernet" style="display:none;">
+            <textarea name="networks_list" placeholder="Enter networks comma-separated, e.g., 192.168.1.0/24, 192.168.2.0/24" rows="3" style="width:90%; border-radius:8px;"></textarea><br>
+            <button type="submit">Supernet</button>
         </form>
 
         {% if error %}
