@@ -1,55 +1,62 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Subnetting Results</title>
+    <title>Subnetting Result</title>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background: #eef2f6; text-align: center; }
-        .card { background: white; width: 750px; margin: 30px auto; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        table { margin: auto; border-collapse: collapse; }
-        td, th { padding: 10px; border-bottom: 1px solid #ccc; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f7f7f7; text-align: center; }
+        .container { margin-top: 60px; background: white; padding: 30px; border-radius: 10px; width: 600px; margin-left: auto; margin-right: auto; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
         h2 { color: #0078D7; }
+        p { font-size: 16px; }
+        ul { text-align: left; display: inline-block; margin-top: 10px; }
+        a { color: #0078D7; text-decoration: none; }
+        a:hover { text-decoration: underline; }
     </style>
 </head>
 <body>
-    <div class="card">
+    <div class="container">
         {% if mode == 'normal' %}
-        <h2>Standard Subnet Calculation</h2>
-        <p>IP: {{ ip }} /{{ mask }}</p>
-        <p>Network Bits: {{ network_bits }} | Host Bits: {{ host_bits }}</p>
-        <p><b>Network Address:</b> {{ network_address }}</p>
-        <p><b>Broadcast Address:</b> {{ broadcast_address }}</p>
-        <p><b>Total Usable Hosts:</b> {{ total_hosts }}</p>
+            <h2>Normal Subnet Calculation</h2>
+            <p>IP: {{ ip }}</p>
+            <p>Mask: /{{ mask }}</p>
+            <p>Network bits: {{ network_bits }}</p>
+            <p>Host bits: {{ host_bits }}</p>
+            <p>Network Address: {{ network_address }}</p>
+            <p>Broadcast Address: {{ broadcast_address }}</p>
+            <p>Total Usable Hosts: {{ total_hosts }}</p>
+        {% elif mode == 'host' %}
+            <h2>Subnetting via Host</h2>
+            <p>IP: {{ ip }}</p>
+            <p>Required Hosts: {{ hosts }}</p>
+            <p>Required Host Bits: {{ required_bits }}</p>
+            <p>New Prefix: /{{ new_prefix }}</p>
+            <p>Total Subnets: {{ total }}</p>
+            <ul>
+                {% for s in subnets %}
+                    <li>{{ s }}</li>
+                {% endfor %}
+            </ul>
+        {% elif mode == 'network' %}
+            <h2>Subnetting via Network</h2>
+            <p>IP: {{ ip }}</p>
+            <p>Number of Subnets: {{ networks }}</p>
+            <p>Bits Needed: {{ bits_needed }}</p>
+            <p>New Prefix: /{{ new_prefix }}</p>
+            <p>Total Subnets: {{ total }}</p>
+            <ul>
+                {% for s in subnets %}
+                    <li>{{ s }}</li>
+                {% endfor %}
+            </ul>
+        {% elif mode == 'supernet' %}
+            <h2>Supernetting Result</h2>
+            <p>Networks: {{ ip1 }} and {{ ip2 }}</p>
+            <ul>
+                {% for s in supernet_list %}
+                    <li>{{ s }}</li>
+                {% endfor %}
+            </ul>
         {% endif %}
-
-        {% if mode == 'host' %}
-        <h2>Subnetting via Host</h2>
-        <p>IP: {{ ip }} | Hosts per subnet: {{ hosts }}</p>
-        <p>Host bits needed: {{ required_bits }} | New prefix: /{{ new_prefix }}</p>
-        <p>Total Subnets created: {{ total }}</p>
-        <h3>Example Subnets:</h3>
-        <table>
-            <tr><th>Subnet</th><th>Range</th></tr>
-            {% for s in subnets %}
-            <tr><td>{{ s }}</td><td>{{ s.network_address }} - {{ s.broadcast_address }}</td></tr>
-            {% endfor %}
-        </table>
-        {% endif %}
-
-        {% if mode == 'network' %}
-        <h2>Subnetting via Network</h2>
-        <p>IP: {{ ip }} | Subnets required: {{ networks }}</p>
-        <p>Bits borrowed: {{ bits_needed }} | New prefix: /{{ new_prefix }}</p>
-        <p>Total Subnets created: {{ total }}</p>
-        <h3>Example Subnets:</h3>
-        <table>
-            <tr><th>Subnet</th><th>Range</th></tr>
-            {% for s in subnets %}
-            <tr><td>{{ s }}</td><td>{{ s.network_address }} - {{ s.broadcast_address }}</td></tr>
-            {% endfor %}
-        </table>
-        {% endif %}
-
-        <br><a href="/">🔙 Try Again</a>
+        <br><a href="/">⬅ Back</a>
     </div>
 </body>
 </html>

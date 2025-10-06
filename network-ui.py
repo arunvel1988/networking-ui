@@ -8,6 +8,7 @@ app = Flask(__name__)
 def home():
     return render_template('index.html')
 
+# Normal calculation
 @app.route('/calculate', methods=['POST'])
 def calculate():
     ip_input = request.form['ip']
@@ -56,7 +57,7 @@ def subnet_host():
         hosts=hosts,
         required_bits=required_bits,
         new_prefix=new_prefix,
-        subnets=subnets[:5],  # Show first few for brevity
+        subnets=subnets[:5],  # show first 5 for brevity
         total=len(subnets)
     )
 
@@ -83,6 +84,30 @@ def subnet_network():
         new_prefix=new_prefix,
         subnets=subnets[:5],
         total=len(subnets)
+    )
+
+# Supernetting
+@app.route('/supernet', methods=['POST'])
+def supernet():
+    ip1_input = request.form['ip1']
+    ip2_input = request.form['ip2']
+
+    try:
+        net1 = ipaddress.ip_network(ip1_input, strict=False)
+        net2 = ipaddress.ip_network(ip2_input, strict=False)
+    except ValueError as e:
+        return render_template('index.html', error=f"Invalid IP input: {e}")
+
+    start_ip = min(net1.network_address, net2.network_address)
+    end_ip = max(net1.broadcast_address, net2.broadcast_address)
+    supernet_list = list(ipaddress.summarize_address_range(start_ip, end_ip))
+
+    return render_template(
+        'result.html',
+        mode="supernet",
+        ip1=ip1_input,
+        ip2=ip2_input,
+        supernet_list=supernet_list
     )
 
 if __name__ == '__main__':
